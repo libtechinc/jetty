@@ -1,0 +1,37 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+// sourceCompatibility = 1.5
+version = '1.0'
+
+repositories {
+    jcenter {
+        url 'http://jcenter.bintray.com/'
+    }
+}
+
+dependencies {
+    compile 'org.eclipse.jetty:jetty-server:8.1.18.v20150929'
+}
+
+task startServer(dependsOn: compileJava) << {
+    new File('build/lib').mkdirs()
+    copy {
+        from configurations.runtime
+        into 'build/lib'
+    }
+
+    ProcessBuilder processBuilder = new ProcessBuilder('java', '-cp', 'build/classes/main:build/lib/*', 'Boot');
+    // processBuilder.redirectErrorStream(true);
+    Process p = processBuilder.start();
+    // p.waitFor();
+	
+	BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+    println br.readLine();
+    br.close()
+    // sleep(10000)
+}
+
+task stopServer << {
+	
+}
